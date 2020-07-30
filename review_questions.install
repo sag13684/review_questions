@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file
+ * Contains install and update functions for Review Questions.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function review_questions_install($is_syncing) {
+  // Install field_review_questions field storage.
+  $field_storage = Drupal::entityTypeManager()
+    ->getStorage('field_storage_config')
+    ->create([
+      'field_name' => 'field_review_questions',
+      'entity_type' => 'node',
+      'type' => 'entity_reference_revisions',
+      'settings' => ['target_type' => 'paragraph'],
+    ]);
+  $field_storage->save();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function review_questions_uninstall($is_syncing) {
+  // Un-install field_review_questions field storage.
+  $field_storages = Drupal::entityTypeManager()
+    ->getStorage('field_storage_config')
+    ->loadByProperties([
+      'id' => 'node.field_review_questions',
+    ]);
+  if (!empty($field_storages)) {
+    $field_storage = reset($field_storages);
+    $field_storage->delete();
+  }
+}

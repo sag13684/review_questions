@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains review_questions.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function review_questions_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the review_questions module.
+    case 'help.page.review_questions':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Adds functionality that allows the user to add review questions via a field collection on a per node basis.') . '</p>';
+      return $output;
+
+    default:
+  }
+}

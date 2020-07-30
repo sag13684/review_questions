@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.review_questions.field_question
+    - field.field.paragraph.review_questions.field_show_question
+    - paragraphs.paragraphs_type.review_questions
+  module:
+    - text
+  enforced:
+    module:
+      - review_questions
+id: paragraph.review_questions.default
+targetEntityType: paragraph
+bundle: review_questions
+mode: default
+content:
+  field_question:
+    weight: 0
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+hidden:
+  field_show_question: true

@@ -1,0 +1,7 @@
+review_questions.admin_settings:
+  path: '/admin/config/review-questions'
+  defaults:
+    _form: '\Drupal\review_questions\Form\ReviewQuestionsSettingsForm'
+    _title: 'Review Questions Configurations'
+  requirements:
+    _permission: 'administer review questions'

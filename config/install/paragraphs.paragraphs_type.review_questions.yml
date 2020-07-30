@@ -1,0 +1,12 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - review_questions
+id: review_questions
+label: 'Review Questions'
+icon_uuid: null
+icon_default: null
+description: 'Paragraph for adding Review questions feature.'
+behavior_plugins: {  }

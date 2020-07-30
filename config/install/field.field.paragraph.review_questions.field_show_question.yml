@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_show_question
+    - paragraphs.paragraphs_type.review_questions
+  enforced:
+    module:
+      - review_questions
+id: paragraph.review_questions.field_show_question
+field_name: field_show_question
+entity_type: paragraph
+bundle: review_questions
+label: Show Question?
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Show Question?
+  off_label: 'Off'
+field_type: boolean
