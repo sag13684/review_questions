@@ -5,6 +5,8 @@
  * Contains review_questions.module.
  */
 
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
@@ -21,4 +23,44 @@ function review_questions_help($route_name, RouteMatchInterface $route_match) {
 
     default:
   }
+}
+
+
+/**
+ * Implements hook_entity_view_alter().
+ */
+function review_questions_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
+  // Check if entity type is node.
+  if ($entity->getEntityTypeId() == 'node') {
+    // Only show if field_review_questions is displayed.
+    if ($display->getComponent('field_review_questions')) {
+      // Get enabled node types from config.
+      $config = Drupal::config('review_questions.settings');
+      $enabled_types = $config->get('node_types');
+      if (!empty($enabled_types)) {
+        $enabled_types = array_filter($enabled_types);
+        // Check if bundle is one of the enabled types.
+        if (in_array($entity->bundle(), $enabled_types)) {
+          $current_user = Drupal::currentUser();
+          // Show only for authenticated users.
+          if ($current_user->id()) {
+            // Remove default render array.
+            $build['field_review_questions'] = [];
+            // Check if field_review_questions has values.
+            if ($entity->field_review_questions->getValue()) {
+              // Get Review Questions and Answers form.
+              $form = Drupal::formBuilder()
+                ->getForm('\Drupal\review_questions\Form\ReviewQuestionsAnswersForm', $entity);
+              $build['field_review_questions'] = $form;
+            }
+          }
+          else {
+            // Hide form for anonymous users.
+            $build['field_review_questions']['#access'] = FALSE;
+          }
+        }
+      }
+    }
+  }
+
 }

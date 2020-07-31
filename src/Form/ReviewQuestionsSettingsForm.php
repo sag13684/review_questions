@@ -120,15 +120,19 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
       ->set('node_types', $form_state->getValue('node_types'))
       ->set('emails', $form_state->getValue('emails'))
       ->save(TRUE);
+    // Get all node types.
     $node_types = $form_state->getValue('node_types');
     if (!empty($node_types)) {
       foreach ($node_types as $type => $value) {
+        // If the node type was selected.
         if ($value) {
+          // Check if field storage exists.
           $field_storages = $this->entityTypeManager
             ->getStorage('field_storage_config')
             ->loadByProperties([
               'id' => 'node.field_review_questions',
             ]);
+          // If not created one, needed to create a field.
           if (!$field_storages) {
             $field_storage = $this->entityTypeManager
               ->getStorage('field_storage_config')
@@ -136,13 +140,16 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
                 'field_name' => 'field_review_questions',
                 'entity_type' => 'node',
                 'type' => 'entity_reference_revisions',
+                'cardinality' => -1,
                 'settings' => ['target_type' => 'paragraph'],
               ]);
             $field_storage->save();
           }
+          // Check if field already exist.
           $fields = $this->entityTypeManager
             ->getStorage('field_config')
             ->loadByProperties(['id' => 'node.' . $type . '.field_review_questions']);
+          // If no fields found, create one.
           if (!$fields) {
             $field = $this->entityTypeManager
               ->getStorage('field_config')
@@ -163,7 +170,7 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
                 ],
               ]);
             $field->save();
-
+            // Adds entity default view display settings for field field_review_questions.
             $view_display = $this->entityTypeManager
               ->getStorage('entity_view_display')
               ->load('node.' . $type . '.default');
@@ -177,6 +184,8 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
               ],
             ]);
             $view_display->save();
+
+            // Adds entity default view form settings for field field_review_questions.
             $form_display = $this->entityTypeManager
               ->getStorage('entity_form_display')
               ->load('node.' . $type . '.default');
@@ -197,7 +206,7 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
           }
         }
         else {
-          // Deleting field.
+          // Delete the field.
           $fields = $this->entityTypeManager
             ->getStorage('field_config')
             ->loadByProperties([

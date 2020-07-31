@@ -16,6 +16,7 @@ function review_questions_install($is_syncing) {
       'field_name' => 'field_review_questions',
       'entity_type' => 'node',
       'type' => 'entity_reference_revisions',
+      'cardinality' => -1,
       'settings' => ['target_type' => 'paragraph'],
     ]);
   $field_storage->save();

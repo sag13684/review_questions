@@ -10,7 +10,7 @@ dependencies:
 id: paragraph.field_question
 field_name: field_question
 entity_type: paragraph
-type: text
+type: string_long
 settings:
   max_length: 255
 module: text
