@@ -18,15 +18,17 @@
  */
 #}
 {% if review_questions is not empty %}
+  {{ 'Following are the details of answers:'|t }}
+  <br/><br/>
   {{ 'Node URL:'|t }} {{ url('entity.node.canonical', {'node': review_questions['node'].id()}) }}
-  <br/>
-  {{ 'Answers submitted for Questions:'|t  }}
-  <br/>
+  <br/><br/>
+  {{ 'Answers submitted for following Questions:'|t }}
+  <br/><br/>
   {% for review_question in review_questions['questions'] %}
-    Question: {{ review_question['question'] }}
+    {% trans %}Question: {{ review_question['question'] }}{% endtrans %}
     <br/>
-    Answer: {{ review_question['answer'] }}
-    <br/>
+    {% trans %}Answer: {{ review_question['answer'] }}{% endtrans %}
+    <br/><br/>
   {% endfor %}
   {% trans %}Submitted by : {{ user_name }} ({{ user_email }}){% endtrans %}
 {% endif %}

@@ -100,7 +100,7 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
     parent::validateForm($form, $form_state);
     // Validate email addresses.
     if (!empty($form_state->getValue('emails'))) {
-      $emails = preg_replace('/\r\n|[\r\n]/', ',', $form_state->getValue('emails'));
+      $emails = preg_replace('/\r\n|[\r\n]/', ', ', $form_state->getValue('emails'));
       $emails = explode(', ', $emails);
       foreach ($emails as $email) {
         if (!$this->emailValidator->isValid($email)) {

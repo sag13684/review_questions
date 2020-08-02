@@ -2,6 +2,7 @@ administer review questions:
   title: 'Administer Review Question'
   description: 'Configure settings for Review Questions.'
   restrict access: true
+
 add answers entities:
   title: 'Create new Answers entities'
 
