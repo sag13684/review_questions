@@ -881,7 +881,7 @@ display:
           empty: true
           tokenize: false
           content:
-            value: 'No answer entities created yet.'
+            value: 'No answer entities found.'
             format: basic_html
           plugin_id: text
       relationships:
