@@ -77,7 +77,7 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
     $form['node_types'] = [
       '#title' => $this->t('Select content types'),
       '#type' => 'checkboxes',
-      '#description' => $this->t('Select content types for which Review Questions form should appear.'),
+      '#description' => $this->t('Select content types for which Review Questions form should appear. Do not uncheck a content type checkbox, once answer submissions exists for the content type.'),
       '#options' => $options,
       '#default_value' => !empty($config->get('node_types')) ? $config->get('node_types') : [],
     ];
