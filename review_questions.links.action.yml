@@ -1,0 +1,11 @@
+entity.answers.add_form:
+  route_name: entity.answers.add_form
+  title: 'Add Answers'
+  appears_on:
+    - entity.answers.collection
+
+entity.answers.settings:
+  route_name: answers.settings
+  title: 'Answers Settings'
+  appears_on:
+    - entity.answers.collection

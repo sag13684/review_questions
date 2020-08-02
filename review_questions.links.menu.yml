@@ -3,3 +3,17 @@ review_questions.admin_settings:
   description: 'Configure Review Questions settings.'
   route_name: review_questions.admin_settings
   parent: 'system.admin_config_content'
+
+# Answers menu items definition
+entity.answers.collection:
+  title: 'Answers list'
+  route_name: entity.answers.collection
+  description: 'List Answers entities'
+  parent: system.admin_structure
+  weight: 100
+
+answers.admin.structure.settings:
+  title: 'Answers settings'
+  description: 'Configure Answers entities'
+  route_name: answers.settings
+  parent: system.admin_structure

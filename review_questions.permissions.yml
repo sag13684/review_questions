@@ -2,3 +2,19 @@ administer review questions:
   title: 'Administer Review Question'
   description: 'Configure settings for Review Questions.'
   restrict access: true
+add answers entities:
+  title: 'Create new Answers entities'
+
+administer answers entities:
+  title: 'Administer Answers entities'
+  description: 'Allow to access the administration form to configure Answers entities.'
+  restrict access: true
+
+delete answers entities:
+  title: 'Delete Answers entities'
+
+edit answers entities:
+  title: 'Edit Answers entities'
+
+view answers entities:
+  title: 'View Answers entities'

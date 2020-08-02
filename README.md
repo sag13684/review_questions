@@ -50,4 +50,7 @@ CONFIGURATION
        then only Questions are visible on the node page.
     4. Add Answers and Hit Save Answer button, Check email addresses added
        in step 2 for Answer details.
+    5. To see Answer entities submissions, Verify the user role has
+       permission "Administer Answers Entities" and Go to
+       "/review-questions/submissions".
 

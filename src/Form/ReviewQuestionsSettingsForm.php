@@ -101,7 +101,7 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
     // Validate email addresses.
     if (!empty($form_state->getValue('emails'))) {
       $emails = preg_replace('/\r\n|[\r\n]/', ',', $form_state->getValue('emails'));
-      $emails = explode(',', $emails);
+      $emails = explode(', ', $emails);
       foreach ($emails as $email) {
         if (!$this->emailValidator->isValid($email)) {
           $form_state->setErrorByName('review_questions_emails', $this->t('Please enter valid email address'));
@@ -132,7 +132,7 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
             ->loadByProperties([
               'id' => 'node.field_review_questions',
             ]);
-          // If not created one, needed to create a field.
+          // Create field storage field_review_questions.
           if (!$field_storages) {
             $field_storage = $this->entityTypeManager
               ->getStorage('field_storage_config')
@@ -169,6 +169,7 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
                   ],
                 ],
               ]);
+            // Save field.
             $field->save();
             // Adds entity default view display settings for field field_review_questions.
             $view_display = $this->entityTypeManager
@@ -183,6 +184,7 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
                 'link' => '',
               ],
             ]);
+            // Save display settings.
             $view_display->save();
 
             // Adds entity default view form settings for field field_review_questions.
@@ -202,11 +204,12 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
                 'default_paragraph_type' => 'review_questions',
               ],
             ]);
+            // Save form display settings.
             $form_display->save();
           }
         }
         else {
-          // Delete the field.
+          // Find if field exist for the content type.
           $fields = $this->entityTypeManager
             ->getStorage('field_config')
             ->loadByProperties([
@@ -214,6 +217,7 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
             ]);
           if (!empty($fields)) {
             $field = reset($fields);
+            // Delete the field.
             $field->delete();
           }
         }

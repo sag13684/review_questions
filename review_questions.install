@@ -5,6 +5,8 @@
  * Contains install and update functions for Review Questions.
  */
 
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+
 /**
  * Implements hook_install().
  */
@@ -36,4 +38,56 @@ function review_questions_uninstall($is_syncing) {
     $field_storage = reset($field_storages);
     $field_storage->delete();
   }
+}
+
+/**
+ * Create answer entity schema.
+ */
+function review_questions_update_8001(&$sandbox) {
+  // Make sure answer entity schema is created.
+  Drupal::entityDefinitionUpdateManager()->installEntityType(
+    new Drupal\Core\Entity\ContentEntityType([
+      'id' => 'answers',
+      'label' => new TranslatableMarkup('Answers'),
+      'handlers' => [
+        'view_builder' => 'Drupal\Core\Entity\EntityViewBuilder',
+        'list_builder' => 'Drupal\review_questions\AnswersListBuilder',
+        'views_data' => 'Drupal\review_questions\Entity\AnswersViewsData',
+        'translation' => 'Drupal\review_questions\AnswersTranslationHandler',
+
+        'form' => [
+          'default' => 'Drupal\review_questions\Form\AnswersForm',
+          'add' => 'Drupal\review_questions\Form\AnswersForm',
+          'edit' => 'Drupal\review_questions\Form\AnswersForm',
+          'delete' => 'Drupal\review_questions\Form\AnswersDeleteForm',
+        ],
+        'route_provider' => [
+          'html' => 'Drupal\review_questions\AnswersHtmlRouteProvider',
+        ],
+        'access' => 'Drupal\review_questions\AnswersAccessControlHandler',
+      ],
+      'base_table' => 'answers',
+      'translatable' => FALSE,
+      'fieldable' => FALSE,
+      'admin_permission' => 'administer answers entities',
+      'entity_keys' => [
+        'id' => 'id',
+        'entity_id' => 'entity_id',
+        'fc_entity_id' => 'fc_entity_id',
+        'question' => 'question',
+        'answer' => 'answer',
+        'created' => 'created',
+        'changed' => 'changed',
+        'uid' => 'uid',
+      ],
+      'links' => [
+        'canonical' => '/admin/structure/answers/{answers}',
+        'add-form' => '/admin/structure/answers/add',
+        'edit-form' => '/admin/structure/answers/{answers}/edit',
+        'delete-form' => '/admin/structure/answers/{answers}/delete',
+        'collection' => '/admin/structure/answers',
+      ],
+      'field_ui_base_route' => 'answers.settings',
+    ])
+  );
 }
