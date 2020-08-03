@@ -83,7 +83,6 @@ class AnswersListBuilder extends EntityListBuilder {
     ];
     $header['question'] = [
       'data' => $this->t('Question'),
-      'class' => [RESPONSIVE_PRIORITY_MEDIUM],
     ];
     $header['answer'] = [
       'data' => $this->t('Answer'),
@@ -104,7 +103,13 @@ class AnswersListBuilder extends EntityListBuilder {
       'sort' => 'desc',
       'class' => [RESPONSIVE_PRIORITY_MEDIUM],
     ];
-    return $header + parent::buildHeader();
+
+    $header['operations'] = [
+      'data' => $this->t('Operations'),
+      'class' => [RESPONSIVE_PRIORITY_MEDIUM],
+    ];
+
+    return $header;
   }
 
   /**

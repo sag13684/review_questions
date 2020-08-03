@@ -135,7 +135,7 @@ display:
               align: ''
               separator: ''
               empty_column: false
-              responsive: ''
+              responsive: priority-medium
             created:
               sortable: true
               default_sort_order: desc

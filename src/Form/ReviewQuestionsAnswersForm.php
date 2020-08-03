@@ -98,6 +98,9 @@ class ReviewQuestionsAnswersForm extends FormBase {
                 '#default_value' => $answer->answer->value ?? '',
                 '#required' => TRUE,
               ];
+              if (!empty($answer)) {
+                $form['review_questions'][$paragraph_id]['answer']['#cache']['tags'] = $answer->getCacheTags();
+              }
               // Show submit button flag set true if one or more elements are visible.
               $show_submit_button = TRUE;
             }
@@ -111,6 +114,8 @@ class ReviewQuestionsAnswersForm extends FormBase {
               '#type' => 'submit',
               '#value' => $this->t('Submit Answers'),
             ];
+            // Add cache tags for node id.
+            $form['#cache']['#tags'] = ['node:' . $node->id()];
           }
         }
       }

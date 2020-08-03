@@ -91,6 +91,7 @@ class Answers extends ContentEntityBase implements AnswersInterface {
       ->setSetting('target_type', 'node')
       ->setSetting('handler', 'default')
       ->setTranslatable(TRUE)
+      ->setRequired(TRUE)
       ->setDisplayOptions('view', [
         'label' => 'above',
         'type' => 'entity_reference_label',
@@ -119,6 +120,7 @@ class Answers extends ContentEntityBase implements AnswersInterface {
         'type' => 'number',
         'weight' => -4,
       ])
+      ->setRequired(TRUE)
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
@@ -130,6 +132,7 @@ class Answers extends ContentEntityBase implements AnswersInterface {
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
       ->setTranslatable(TRUE)
+      ->setRequired(TRUE)
       ->setDisplayOptions('view', [
         'label' => 'above',
         'type' => 'author',
@@ -170,7 +173,7 @@ class Answers extends ContentEntityBase implements AnswersInterface {
       ->setDisplayConfigurable('view', TRUE)
       ->setRequired(TRUE);
 
-   // Answer text.
+    // Answer text.
     $fields['answer'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Answer'))
       ->setDescription(t('The answer of the Answers entity.'))

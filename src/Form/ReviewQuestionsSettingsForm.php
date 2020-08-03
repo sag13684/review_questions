@@ -221,6 +221,27 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
             $field = reset($fields);
             // Delete the field.
             $field->delete();
+            // Node storage.
+            $node_storage = $this->entityTypeManager->getStorage('node');
+            // Fetch nids of unchecked content type.
+            $query = $node_storage->getQuery();
+            $query->condition('type', $type);
+            $nids = $query->execute();
+            if (!empty($nids)) {
+              $paragraph_storage = $this->entityTypeManager->getStorage('paragraph');
+              // Load review_questions paragraphs related to unchecked
+              // content type.
+              $paragraph_query = $paragraph_storage->getQuery();
+              $paragraph_query->condition('type', 'review_questions');
+              $paragraph_query->condition('parent_type', 'node');
+              $paragraph_query->condition('parent_id', array_values($nids), 'IN');
+              $paragraph_ids = $paragraph_query->execute();
+              if (!empty($paragraph_ids)) {
+                $paragraphs = $paragraph_storage->loadMultiple($paragraph_ids);
+                // Delete paragraphs.
+                $paragraph_storage->delete($paragraphs);
+              }
+            }
           }
         }
       }
