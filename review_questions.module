@@ -5,10 +5,10 @@
  * Contains review_questions.module.
  */
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Component\Utility\Html;
 
 /**
  * Implements hook_help().
@@ -40,7 +40,7 @@ function review_questions_entity_view_alter(array &$build, EntityInterface $enti
       $enabled_types = $config->get('node_types');
       if (!empty($enabled_types)) {
         $enabled_types = array_filter($enabled_types);
-        // Check if bundle is one of the enabled types.
+        // Check if bundle is one of the enabled types for review questions.
         if (in_array($entity->bundle(), $enabled_types)) {
           $current_user = Drupal::currentUser();
           // Show only for authenticated users.
@@ -77,7 +77,7 @@ function review_questions_mail($key, &$message, $params) {
       // Get from email address from site config.
       $message['from'] = Drupal::config('system.site')->get('mail');
       $message['subject'] = t('Answers submitted for : @title', ['@title' => $params['node_title']], $options);
-      $message['body'][] =  Html::escape($params['message']);
+      $message['body'][] = Html::escape($params['message']);
       // Add headers to support html emails.
       $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed; delsp=yes';
       break;
@@ -112,5 +112,91 @@ function template_preprocess_review_questions_mail(&$variables) {
     $account = $review_questions['user'];
     $variables['user_name'] = $account->getDisplayName();
     $variables['user_email'] = $account->getEmail();
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_update().
+ */
+function review_questions_paragraph_update(EntityInterface $entity) {
+  // Review questions paragraph type.
+  if ($entity->bundle() == 'review_questions') {
+    if (!empty($entity->field_question->value)) {
+      // Fetch paragraph's node entity.
+      $node = $entity->getParentEntity();
+      $answers_storage = Drupal::entityTypeManager()->getStorage('answers');
+      // Fetch answers entity by nid and paragraph id.
+      $answers = $answers_storage->loadByProperties([
+        'entity_id' => $node->id(),
+        'fc_entity_id' => $entity->id(),
+      ]);
+      if (!empty($answers)) {
+        $answer = reset($answers);
+        // If question text changed in paragraph, update related answers entity.
+        if ($entity->field_question->value != $answer->question->value) {
+          //  Update question text.
+          $answer->question->value = $entity->field_question->value;
+          $answer->save();
+        }
+      }
+    }
+  }
+}
+
+
+/**
+ * Implements hook_entity_delete().
+ */
+function review_questions_entity_delete(Drupal\Core\Entity\EntityInterface $entity) {
+  // Delete answers entites when review_questions paragraphs are deleted.
+  if ($entity->getEntityTypeId() == 'paragraph' && $entity->bundle() == 'review_questions') {
+    if (!empty($entity->field_question->value)) {
+      $answers_storage = Drupal::entityTypeManager()->getStorage('answers');
+      // Get answers entity related to review_questions paragraph.
+      $answers = $answers_storage->loadByProperties([
+        'fc_entity_id' => $entity->id(),
+      ]);
+      if (!empty($answers)) {
+        $answer = reset($answers);
+        // Delete answers entity.
+        $answer->delete();
+      }
+    }
+  }
+
+  // Delete review_questions paragraphs and related answer entities.
+  if ($entity->getEntityTypeId() == 'node') {
+    // Get enabled node types for reviews_questions from the config.
+    $config = Drupal::config('review_questions.settings');
+    $enabled_types = $config->get('node_types');
+    if (!empty($enabled_types)) {
+      $enabled_types = array_filter($enabled_types);
+      // Check if bundle is one of the enabled types for review questions.
+      if (in_array($entity->bundle(), $enabled_types)) {
+        // Paragraph storage.
+        $paragraph_storage = Drupal::entityTypeManager()
+          ->getStorage('paragraph');
+        // Get all review_questions paragraph.
+        $paragraphs = $paragraph_storage->loadByProperties([
+          'parent_id' => $entity->id(),
+          'parent_type' => 'node',
+          'type' => 'review_questions',
+        ]);
+        if (!empty($paragraphs)) {
+          // Delete review_questions paragraphs.
+          $paragraph_storage->delete($paragraphs);
+        }
+        // Answers entity storage.
+        $answers_storage = Drupal::entityTypeManager()->getStorage('answers');
+        // Get all answers entities related to the node.
+        $answers = $answers_storage->loadByProperties([
+          'entity_id' => $entity->id(),
+        ]);
+        if (!empty($answers)) {
+          // Delete related answer entities.
+          $answers_storage->delete($answers);
+        }
+      }
+    }
   }
 }
