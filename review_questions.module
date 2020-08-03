@@ -128,7 +128,7 @@ function review_questions_paragraph_update(EntityInterface $entity) {
       // Fetch answers entity by nid and paragraph id.
       $answers = $answers_storage->loadByProperties([
         'entity_id' => $node->id(),
-        'fc_entity_id' => $entity->id(),
+        'paragraph_id' => $entity->id(),
       ]);
       if (!empty($answers)) {
         $answer = reset($answers);
@@ -154,7 +154,7 @@ function review_questions_entity_delete(Drupal\Core\Entity\EntityInterface $enti
       $answers_storage = Drupal::entityTypeManager()->getStorage('answers');
       // Get answers entity related to review_questions paragraph.
       $answers = $answers_storage->loadByProperties([
-        'fc_entity_id' => $entity->id(),
+        'paragraph_id' => $entity->id(),
       ]);
       if (!empty($answers)) {
         $answer = reset($answers);

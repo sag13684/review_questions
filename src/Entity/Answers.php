@@ -43,7 +43,7 @@ use Drupal\user\UserInterface;
  *   entity_keys = {
  *     "id" = "id",
  *     "entity_id" = "entity_id",
- *     "fc_entity_id" = "fc_entity_id",
+ *     "paragraph_id" = "paragraph_id",
  *     "question" = "question",
  *     "answer" = "answer",
  *     "uid" = "uid",
@@ -80,8 +80,10 @@ class Answers extends ContentEntityBase implements AnswersInterface {
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
+    // Answers entity id.
     $fields['id']->setDescription(t('The ID of answers entity.'));
 
+    // Question paragraphs node id.
     $fields['entity_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Question Entity'))
       ->setDescription(t('The Entity ID of the entity to which questions are added.'))
@@ -107,7 +109,8 @@ class Answers extends ContentEntityBase implements AnswersInterface {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
-    $fields['fc_entity_id'] = BaseFieldDefinition::create('integer')
+    // Review Questions paragraph id.
+    $fields['paragraph_id'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Paragraph ID'))
       ->setDescription(t('The Paragraph ID of Review Paragraphs.'))
       ->setReadOnly(TRUE)
@@ -119,6 +122,7 @@ class Answers extends ContentEntityBase implements AnswersInterface {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    // Uid of user who submitted the answer.
     $fields['uid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
       ->setDescription(t('The user ID of author of the Answers entity.'))
@@ -144,6 +148,7 @@ class Answers extends ContentEntityBase implements AnswersInterface {
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    // Question text.
     $fields['question'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Question'))
       ->setDescription(t('The Question of the Answers entity.'))
@@ -165,6 +170,7 @@ class Answers extends ContentEntityBase implements AnswersInterface {
       ->setDisplayConfigurable('view', TRUE)
       ->setRequired(TRUE);
 
+   // Answer text.
     $fields['answer'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Answer'))
       ->setDescription(t('The answer of the Answers entity.'))
@@ -186,10 +192,12 @@ class Answers extends ContentEntityBase implements AnswersInterface {
       ->setDisplayConfigurable('view', TRUE)
       ->setRequired(TRUE);
 
+    // Answers entity created time.
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
       ->setDescription(t('The time that the entity was created.'));
 
+    // Answsers entity modified date.
     $fields['changed'] = BaseFieldDefinition::create('changed')
       ->setLabel(t('Changed'))
       ->setDescription(t('The time that the entity was last edited.'));

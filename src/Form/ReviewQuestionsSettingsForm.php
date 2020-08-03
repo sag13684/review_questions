@@ -77,7 +77,7 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
     $form['node_types'] = [
       '#title' => $this->t('Select content types'),
       '#type' => 'checkboxes',
-      '#description' => $this->t('Select content types for which Review Questions form should appear. Do not uncheck a content type checkbox, once answer submissions exists for the content type.'),
+      '#description' => $this->t('Select content types for which Review Questions form should appear. Do not uncheck a content type checkbox, if related answer entities exists.'),
       '#options' => $options,
       '#default_value' => !empty($config->get('node_types')) ? $config->get('node_types') : [],
     ];
@@ -101,6 +101,7 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
     // Validate email addresses.
     if (!empty($form_state->getValue('emails'))) {
       $emails = preg_replace('/\r\n|[\r\n]/', ', ', $form_state->getValue('emails'));
+      // Get email addresses in the array.
       $emails = explode(', ', $emails);
       foreach ($emails as $email) {
         if (!$this->emailValidator->isValid($email)) {
@@ -134,6 +135,7 @@ class ReviewQuestionsSettingsForm extends ConfigFormBase {
             ]);
           // Create field storage field_review_questions.
           if (!$field_storages) {
+            // Create a field storage if it doesn't exists.
             $field_storage = $this->entityTypeManager
               ->getStorage('field_storage_config')
               ->create([

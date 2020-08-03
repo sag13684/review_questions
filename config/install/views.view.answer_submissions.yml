@@ -81,7 +81,7 @@ display:
           columns:
             id: id
             entity_id: entity_id
-            fc_entity_id: fc_entity_id
+            paragraph_id: paragraph_id
             question: question
             answer: answer
             uid: uid
@@ -103,7 +103,7 @@ display:
               separator: ''
               empty_column: false
               responsive: priority-medium
-            fc_entity_id:
+            paragraph_id:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -286,10 +286,10 @@ display:
           entity_type: answers
           entity_field: entity_id
           plugin_id: field
-        fc_entity_id:
-          id: fc_entity_id
+        paragraph_id:
+          id: paragraph_id
           table: answers
-          field: fc_entity_id
+          field: paragraph_id
           relationship: none
           group_type: group
           admin_label: ''
@@ -350,7 +350,7 @@ display:
           separator: ', '
           field_api_classes: false
           entity_type: answers
-          entity_field: fc_entity_id
+          entity_field: paragraph_id
           plugin_id: field
         question:
           id: question

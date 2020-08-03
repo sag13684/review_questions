@@ -77,7 +77,7 @@ class AnswersListBuilder extends EntityListBuilder {
       'data' => $this->t('Entity ID'),
       'class' => [RESPONSIVE_PRIORITY_LOW],
     ];
-    $header['fc_entity_id'] = [
+    $header['paragraph_id'] = [
       'data' => $this->t('Paragraph ID'),
       'class' => [RESPONSIVE_PRIORITY_LOW],
     ];
@@ -123,7 +123,7 @@ class AnswersListBuilder extends EntityListBuilder {
       $entity->entity_id->entity->label() . '(Nid: ' . $entity->entity_id->target_id . ')',
       'entity.node.canonical', ['node' => $entity->entity_id->target_id]);
     // Paragraph entity id.
-    $row['fc_entity_id'] = $entity->fc_entity_id->value;
+    $row['paragraph_id'] = $entity->paragraph_id->value;
     // Question text.
     $row['question'] = $entity->question->value;
     // Answer text.

@@ -73,7 +73,7 @@ function review_questions_update_8001(&$sandbox) {
       'entity_keys' => [
         'id' => 'id',
         'entity_id' => 'entity_id',
-        'fc_entity_id' => 'fc_entity_id',
+        'paragraph_id' => 'paragraph_id',
         'question' => 'question',
         'answer' => 'answer',
         'created' => 'created',

@@ -75,6 +75,7 @@ class ReviewQuestionsAnswersForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, EntityInterface $node = NULL) {
     if (!empty($node)) {
+      // Get paragraph ids of review_questions.
       $paragraph_ids = $node->field_review_questions->getValue();
       if (!empty($paragraph_ids)) {
         // Show submit button flag.
@@ -84,9 +85,12 @@ class ReviewQuestionsAnswersForm extends FormBase {
         $paragraphs = $paragraph_storage->loadMultiple(array_column($paragraph_ids, 'target_id'));
         if (!empty($paragraphs)) {
           foreach ($paragraphs as $paragraph_id => $paragraph) {
+            // Show only if Show Question field is checked.
             if ($paragraph->field_show_question->value) {
               $form['review_questions']['#tree'] = TRUE;
+              // Load answers entity.
               $answer = $this->getAnswerEntity($node->id(), $paragraph_id);
+              // Answers text area.
               $form['review_questions'][$paragraph_id]['answer'] = [
                 '#title' => $paragraph->field_question->value,
                 '#type' => 'textarea',
@@ -133,7 +137,7 @@ class ReviewQuestionsAnswersForm extends FormBase {
     // Load answers by node id and paragraph id.
     $answers = $answer_storage->loadByProperties([
       'entity_id' => $node_id,
-      'fc_entity_id' => $paragraph_id,
+      'paragraph_id' => $paragraph_id,
     ]);
     if (!empty($answers)) {
       $answer = reset($answers);
@@ -176,7 +180,7 @@ class ReviewQuestionsAnswersForm extends FormBase {
             // Create new answer entity.
             $answer = Answers::create([
               'entity_id' => $node->id(),
-              'fc_entity_id' => $paragraph_id,
+              'paragraph_id' => $paragraph_id,
               'question' => $paragraphs[$paragraph_id]->field_question->value,
               'answer' => $item['answer'],
               'uid' => $this->currentUser->id(),
