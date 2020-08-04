@@ -117,35 +117,6 @@ function template_preprocess_review_questions_mail(&$variables) {
 }
 
 /**
- * Implements hook_ENTITY_TYPE_update().
- */
-function review_questions_paragraph_update(EntityInterface $entity) {
-  // Review questions paragraph type.
-  if ($entity->bundle() == 'review_questions') {
-    if (!empty($entity->field_question->value)) {
-      // Fetch paragraph's node entity.
-      $node = $entity->getParentEntity();
-      $answers_storage = Drupal::entityTypeManager()->getStorage('answers');
-      // Fetch answers entity by nid and paragraph id.
-      $answers = $answers_storage->loadByProperties([
-        'entity_id' => $node->id(),
-        'paragraph_id' => $entity->id(),
-      ]);
-      if (!empty($answers)) {
-        $answer = reset($answers);
-        // If question text changed in paragraph, update related answers entity.
-        if ($entity->field_question->value != $answer->question->value) {
-          //  Update question text.
-          $answer->question->value = $entity->field_question->value;
-          $answer->save();
-        }
-      }
-    }
-  }
-}
-
-
-/**
  * Implements hook_entity_delete().
  */
 function review_questions_entity_delete(Drupal\Core\Entity\EntityInterface $entity) {
@@ -158,9 +129,8 @@ function review_questions_entity_delete(Drupal\Core\Entity\EntityInterface $enti
         'paragraph_id' => $entity->id(),
       ]);
       if (!empty($answers)) {
-        $answer = reset($answers);
-        // Delete answers entity.
-        $answer->delete();
+        //Delete answers entities.
+        $answers_storage->delete($answers);
       }
     }
   }
