@@ -88,19 +88,13 @@ class ReviewQuestionsAnswersForm extends FormBase {
             // Show only if Show Question field is checked.
             if ($paragraph->field_show_question->value) {
               $form['review_questions']['#tree'] = TRUE;
-              // Load answers entity.
-              $answer = $this->getAnswerEntity($node->id(), $paragraph_id);
               // Answers text area.
               $form['review_questions'][$paragraph_id]['answer'] = [
                 '#title' => $paragraph->field_question->value,
                 '#type' => 'textarea',
                 '#maxlength' => 600,
-                '#default_value' => $answer->answer->value ?? '',
                 '#required' => TRUE,
               ];
-              if (!empty($answer)) {
-                $form['review_questions'][$paragraph_id]['answer']['#cache']['tags'] = $answer->getCacheTags();
-              }
               // Show submit button flag set true if one or more elements are visible.
               $show_submit_button = TRUE;
             }
@@ -121,33 +115,6 @@ class ReviewQuestionsAnswersForm extends FormBase {
       }
     }
     return $form;
-  }
-
-  /**
-   * Gets answer entity by node id and paragraph id.
-   *
-   * @param $node_id
-   *   Node id.
-   * @param $paragraph_id
-   *   Paragraph id.
-   *
-   * @return \Drupal\Core\Entity\EntityInterface|null
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   */
-  protected function getAnswerEntity($node_id, $paragraph_id) {
-    $answer = NULL;
-    $answer_storage = $this->entityTypeManager->getStorage('answers');
-    // Load answers by node id and paragraph id.
-    $answers = $answer_storage->loadByProperties([
-      'entity_id' => $node_id,
-      'paragraph_id' => $paragraph_id,
-    ]);
-    if (!empty($answers)) {
-      $answer = reset($answers);
-    }
-    return $answer;
   }
 
   /**
@@ -173,24 +140,14 @@ class ReviewQuestionsAnswersForm extends FormBase {
       // Loap through questions from  the form.
       foreach ($values['review_questions'] as $paragraph_id => $item) {
         if (!empty($item['answer'])) {
-          // Check if answer entity already exists for the question.
-          $answer = $this->getAnswerEntity($node->id(), $paragraph_id);
-          if (!empty($answer)) {
-            // Update values for answer entity.
-            $answer->question->value = $paragraphs[$paragraph_id]->field_question->value;
-            $answer->answer->value = $item['answer'];
-            $answer->uid->target_id = $this->currentUser->id();
-          }
-          else {
-            // Create new answer entity.
-            $answer = Answers::create([
-              'entity_id' => $node->id(),
-              'paragraph_id' => $paragraph_id,
-              'question' => $paragraphs[$paragraph_id]->field_question->value,
-              'answer' => $item['answer'],
-              'uid' => $this->currentUser->id(),
-            ]);
-          }
+          // Create new answer entity.
+          $answer = Answers::create([
+            'entity_id' => $node->id(),
+            'paragraph_id' => $paragraph_id,
+            'question' => $paragraphs[$paragraph_id]->field_question->value,
+            'answer' => $item['answer'],
+            'uid' => $this->currentUser->id(),
+          ]);
           // Save answer entity.
           $answer->save();
           // Form questions array to used for sending mail notification.
@@ -247,6 +204,33 @@ class ReviewQuestionsAnswersForm extends FormBase {
         }
       }
     }
+  }
+
+  /**
+   * Gets answer entity by node id and paragraph id.
+   *
+   * @param $node_id
+   *   Node id.
+   * @param $paragraph_id
+   *   Paragraph id.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface|null
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  protected function getAnswerEntity($node_id, $paragraph_id) {
+    $answer = NULL;
+    $answer_storage = $this->entityTypeManager->getStorage('answers');
+    // Load answers by node id and paragraph id.
+    $answers = $answer_storage->loadByProperties([
+      'entity_id' => $node_id,
+      'paragraph_id' => $paragraph_id,
+    ]);
+    if (!empty($answers)) {
+      $answer = reset($answers);
+    }
+    return $answer;
   }
 
 }
